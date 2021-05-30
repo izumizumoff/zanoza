@@ -74,8 +74,8 @@ scroll_listX.place(x=10, y=720, height=20, width=480)
 
 all_list = films.allFilms()
 
-for x in film_list:
-    x = '%s. %s' % ((film_list.index(x))+1, x)
+for x in all_list:
+    x = '%s. %s' % ((all_list.index(x))+1, x)
     list_box.insert(END, x)
 
 left_frame.place(x=0, y=0, width=500, height=800)
