@@ -15,20 +15,25 @@ root.resizable(False, False)
 left_frame = Label(relief='sunken')
 
 # radio area
+def radio_inspect():
+    print(radio_var.get())
+
 radio_var = BooleanVar()
-radio_var.set(0)
+radio_var.set(False)
 radio1 = Radiobutton(
     left_frame,
     text='FILMS',
     variable=radio_var,
-    value=0,
+    value=False,
+    command=radio_inspect,
     font=('', 9, 'italic')).place(x=0, y=0, width=245, height=40)
 radio2 = Radiobutton(
     left_frame,
     text='SERIALS',
     variable=radio_var,
     font=('', 9, 'italic'),
-    value=1).place(x=250, y=0, width=245, height=40)
+    command=radio_inspect,
+    value=True).place(x=250, y=0, width=245, height=40)
 
 # search area
 search_title = Label(
@@ -67,7 +72,7 @@ list_box.place(x=10, y=180, width=460, height = 540)
 scroll_listY.place(x=470, y=180, width=20, height=540)
 scroll_listX.place(x=10, y=720, height=20, width=480)
 
-film_list = films.allFilms()
+all_list = films.allFilms()
 
 for x in film_list:
     x = '%s. %s' % ((film_list.index(x))+1, x)

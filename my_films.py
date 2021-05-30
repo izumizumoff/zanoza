@@ -32,6 +32,11 @@ class MyFilms:
             films_bin = json.load(file)
         self.films = films_bin.copy()
 
+        with open('serials.json', 'r') as file:
+            serials_bin = json.load(file)
+        self.serials = serials_bin.copy()
+        
+
     def new(self, film, director, year, rate=0):
         # добавляет новый фильм с его основными атрибутами
         # название, режиссер, год, рейтинг 
@@ -91,6 +96,14 @@ class MyFilms:
         filmList = list(self.films)
         filmList.sort()
         return filmList
+
+    def allSerials(self):
+        # метод возвращающий полный список
+        # названий сериалов по алфавиту
+
+        serialList = list(self.serials)
+        serialList.sort()
+        return serialList
 
     def allDirectors(self):
         # метод возвращающий полный список 
