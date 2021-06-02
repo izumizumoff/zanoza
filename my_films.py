@@ -28,16 +28,17 @@ class MyFilms:
     def __init__(self):
         import json
           
-        with open('films.json', 'r') as file:
+        with open('films.json', 'r', encoding='UTF-8') as file:
             films_bin = json.load(file)
         self.films = films_bin.copy()
 
-        with open('serials.json', 'r') as file:
+        with open('serials.json', 'r', encoding='UTF-8') as file:
             serials_bin = json.load(file)
-        self.serials = serials_bin.copy()
+        self.allSerials = serials_bin.copy()
+        self.allSerials.sort()
         
 
-    def new(self, film, director, year, rate=0):
+    def newFilm(self, film, director, year, rate=0):
         # добавляет новый фильм с его основными атрибутами
         # название, режиссер, год, рейтинг 
         # выводит на дисплей инфу об этом
@@ -56,6 +57,20 @@ class MyFilms:
                 '\nрежиссер: %s' % director,
                 '\n%d года' % year,
                 '\nмой рейтинг: %d' % rate)
+
+    def newSerial(self, serial):
+        # добавляет новый сериал в список
+        # название, режиссер, год, рейтинг 
+        # выводит на дисплей инфу об этом
+
+        if serial in list(self.serials):
+            print('Такой сериал: "%s" УЖЕ ЕСТЬ!!!' % serial)
+        else:
+            self.serials.append(serial)
+            self.serials.sort()
+
+            print(
+                'Добавлен сериал "%s"' % serial)
 
     def director_search(self, nameOfDir):
         # метод поиска по режиссеру
@@ -96,14 +111,6 @@ class MyFilms:
         filmList = list(self.films)
         filmList.sort()
         return filmList
-
-    def allSerials(self):
-        # метод возвращающий полный список
-        # названий сериалов по алфавиту
-
-        serialList = list(self.serials)
-        serialList.sort()
-        return serialList
 
     def allDirectors(self):
         # метод возвращающий полный список 
@@ -168,20 +175,25 @@ class MyFilms:
         timeF = dateList[1][0:8].replace(':', '-')
         return '%s-%s' % (dateF, timeF)
 
-    def save(self):
+    def saveFilm(self):
         # важный метод
+        # 
         # сохраняющий все данные в файле
         # а также копию в папке с архивом
 
         import json
-        
+        # сохранение фильмов
         name = 'file_bin_dir/' + self.dateTime() + '.json'
-        with open(name, 'w') as file:
+        with open(name, 'w', encoding='UTF-8') as file:
             json.dump(self.films, file, ensure_ascii=False)
-        with open('films.json', 'w') as file_bot:
+        with open('films.json', 'w', encoding='UTF-8') as file_bot:
             json.dump(self.films, file_bot, ensure_ascii=False)
-        with open('films.json', 'r') as file:
+        with open('films.json', 'r', encoding='UTF-8') as file:
             films_bin = json.load(file)
         self.films = films_bin.copy()
+
+        # сохранение сериалов
+
+        print('Фильм добавлен!')
         print('__________________')
         print('СПИСОК ОБНОВЛЕН')

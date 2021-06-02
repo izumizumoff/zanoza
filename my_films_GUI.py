@@ -70,7 +70,7 @@ list_box = Listbox(
 
 
 def print_info(event):
-    all_list = [films.allFilms(), films.allSerials()]
+    all_list = [films.allFilms(), films.allSerials]
     content_list = all_list[radio_var.get()]
     title_form['text'] = content_list[list_box.curselection()[0]]
 
@@ -86,7 +86,7 @@ scroll_listY.place(x=470, y=180, width=20, height=540)
 scroll_listX.place(x=10, y=720, height=20, width=480)
 
 def turn_content(content):
-    all_list = [films.allFilms(), films.allSerials()]
+    all_list = [films.allFilms(), films.allSerials]
     if list_box:
         list_box.delete(0, END)
     content_list = all_list[content]
