@@ -70,10 +70,62 @@ list_box = Listbox(
 
 
 def print_info(event):
-    all_list = [films.allFilms(), films.allSerials]
-    content_list = all_list[radio_var.get()]
-    title_form['text'] = content_list[list_box.curselection()[0]]
+    global title_form
 
+    # ЕСЛИ ВЫБРАН ФИЛЬМ
+    if radio_var.get() == 0:
+        
+        content = films.allFilms()[list_box.curselection()[0]]
+        director = films.films[content]['dir']
+        year = films.films[content]['year']
+        rate = films.rate(films.films[content]['rate'])
+
+        # цикл для переносов длиных названий
+        if len(content) > 24:
+        
+            last_index = 0
+            for x in range(len(content[0:24])):
+                if content[x] == ' ':
+                    last_index = x
+
+            content = content[0:last_index] + '\n' + content[last_index+1:]
+
+        # цикл для переносов длиных оценок
+        if len(rate) > 24:
+        
+            last_index_rate = 0
+            for x in range(len(rate[0:24])):
+                if rate[x] == ' ':
+                    last_index_rate = x
+
+            rate = rate[0:last_index_rate] + '\n' + rate[last_index_rate+1:]
+        
+        title_form.destroy()
+        title_form = Canvas(right_frame)
+        title_form.place(x=5, y=15, width=500, height=800)
+
+        title_form.create_text(15, 0, text='НАЗВАНИЕ ФИЛЬМА:', anchor='nw', font=('', 7, 'bold'))
+        title_form.create_text(15, 40, text=content, anchor='nw')
+        title_form.create_text(15, 130, text='РЕЖИССЕР ФИЛЬМА:', anchor='nw', font=('', 7, 'bold'))
+        title_form.create_text(15, 170, text=director, anchor='nw')
+        title_form.create_text(15, 260, text='ГОД ВЫПУСКА:', anchor='nw', font=('', 7, 'bold'))
+        title_form.create_text(15, 300, text=year, anchor='nw')
+        title_form.create_text(15, 390, text='МОЯ ОЦЕНКА ФИЛЬМУ:', anchor='nw', font=('', 7, 'bold'))
+        title_form.create_text(15, 430, text=rate, anchor='nw')
+    
+    # ЕСЛИ ВЫБРАН СЕРИАЛ
+    elif radio_var.get() == 1:
+        content = films.allSerials[list_box.curselection()[0]]
+        
+        title_form.destroy()
+        title_form = Canvas(right_frame)
+        title_form.place(x=5, y=15, width=500, height=800)
+
+        title_form.create_text(15, 0, text='НАЗВАНИЕ СЕРИАЛА:', anchor='nw', font=('', 7, 'bold'))
+        title_form.create_text(15, 40, text=content, anchor='nw')
+
+    else:
+        pass
 
 list_box.bind('<Double-Button-1>', print_info)
 
@@ -100,7 +152,9 @@ left_frame.place(x=0, y=0, width=500, height=800)
 
 # button ADD
 def press_add():
-    a = messagebox.askyesno('ВНИМАНИЕ', message='Ты точно хочешь\nДОБАВИТЬ фильм/сериал?')
+    a = messagebox.askyesno(
+        'ВНИМАНИЕ',
+        message='Ты точно хочешь\nДОБАВИТЬ фильм/сериал?')
     if a == YES:
         messagebox.showwarning(message='Ты хочешь нажать ДА')
         print('yes')
@@ -109,27 +163,25 @@ def press_add():
     else:
         pass
 
-Button(left_frame, text='ADD', command=press_add).place(y=745, x=150, width=200, height=45)
+Button(
+    left_frame,
+    text='ADD',
+    command=press_add).place(y=745, x=150, width=200, height=45)
 
 # right side
 right_frame = Frame()
 
 #
-title_title = Label(right_frame, text='Название:')
-title_form = Label(right_frame, text='', font=('', 7, 'bold'))
+title_form = Canvas(right_frame)
+title_form.create_text(
+    250,
+    15,
+    text='Описание фильма\nили сериала',
+    font=('', 10, 'bold'),
+    anchor='n',
+    justify='center')
 
-dir_title = Label(right_frame, text='Режиссер:')
-dir_form = Label(right_frame, text='', font=('', 8, 'bold'))
-
-year_title = Label(right_frame, text='Год:')
-year_form = Label(right_frame, text='', font=('', 10, 'bold'))
-
-rate_title = Label(right_frame, text='Рейтинг')
-rate_form = Label(right_frame, text='', font=('', 10, 'bold'))
-
-title_title.place(x=5, y=0, width=500, height=40)
 title_form.place(x=5, y=40, width=500, height=160)
-
 right_frame.place(x=500, y=0, width=500, height=800)
 
 #
