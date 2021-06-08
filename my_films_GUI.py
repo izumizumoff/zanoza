@@ -156,10 +156,47 @@ def press_add():
         'ВНИМАНИЕ',
         message='Ты точно хочешь\nДОБАВИТЬ фильм/сериал?')
     if a == YES:
-        messagebox.showwarning(message='Ты хочешь нажать ДА')
-        print('yes')
-    elif a == NO:
-        print('no')
+        #messagebox.showwarning(message='Ты хочешь нажать ДА')
+        newWin = Toplevel()
+        newWin.title('Добавление нового фильма или сериала')
+        newWin.geometry('800x360')
+        newWin.resizable(False, False)
+        if radio_var.get() == 0:
+            title_label = Label(newWin, text='Название фильма').pack(fill='x')
+            title_entry = Entry(newWin)
+            title_entry.pack(fill='x', padx=15)
+            dir_label = Label(newWin, text='Режиссер фильма').pack(fill='x')
+            dir_entry = Entry(newWin)
+            dir_entry.pack(fill='x', padx=15)
+            year_label = Label(newWin, text='Год выпуска').pack(fill='x')
+            year_entry = Entry(newWin)
+            year_entry.pack(fill='x', padx=15)
+            rate_label = Label(newWin, text='Рейтинг фильма').pack(fill='x')
+            rate_entry = Entry(newWin)
+            rate_entry.pack(fill='x', padx=15)
+
+            
+            def save_button():
+                films.newFilm(title_entry.get(), dir_entry.get(), int(year_entry.get()), int(rate_entry.get()))
+                films.saveFilm()
+                turn_content(radio_var.get())
+                newWin.destroy()
+
+            button = Button(newWin, text='Сохранить!', command=save_button).pack(pady=15)
+
+        elif radio_var.get() == 1:
+            title_label = Label(newWin, text='Название сериала').pack(fill='x')
+            title_entry = Entry(newWin)
+            title_entry.pack(fill='x', padx=15)
+            def save_button():
+                films.newSerial(title_entry.get())
+                films.saveSerials()
+                turn_content(radio_var.get())
+                newWin.destroy()
+            button = Button(newWin, text='Сохранить!', command=save_button).pack(pady=15)
+        else:
+            pass    
+
     else:
         pass
 

@@ -23,10 +23,11 @@ What can:
 	5. List of all directors
 	6. List of all films
 '''
+import json
 class MyFilms:
-	
+
     def __init__(self):
-        import json
+        
           
         with open('films.json', 'r', encoding='UTF-8') as file:
             films_bin = json.load(file)
@@ -63,11 +64,11 @@ class MyFilms:
         # название, режиссер, год, рейтинг 
         # выводит на дисплей инфу об этом
 
-        if serial in list(self.serials):
+        if serial in list(self.allSerials):
             print('Такой сериал: "%s" УЖЕ ЕСТЬ!!!' % serial)
         else:
-            self.serials.append(serial)
-            self.serials.sort()
+            self.allSerials.append(serial)
+            self.allSerials.sort()
 
             print(
                 'Добавлен сериал "%s"' % serial)
@@ -150,6 +151,10 @@ class MyFilms:
 
     def rate(self, r):
         rate_dic = {
+            1: 'ПИЗДЕЦ ПОЛНЫЙ',
+            2: 'ДНО',
+            3: 'Говнище',
+            4: 'Плохой фильм',
             5: 'Ничего особенного, обычный',
 	        6: 'Любопытно было посмотреть',
 	        7: 'Хороший и интересный, рекомендую',
@@ -192,7 +197,7 @@ class MyFilms:
         # сохраняющий все данные в файле
         # а также копию в папке с архивом
 
-        import json
+
         # сохранение фильмов
         name = 'file_bin_dir/' + self.dateTime() + '.json'
         with open(name, 'w', encoding='UTF-8') as file:
@@ -202,9 +207,18 @@ class MyFilms:
         with open('films.json', 'r', encoding='UTF-8') as file:
             films_bin = json.load(file)
         self.films = films_bin.copy()
-
+    def saveSerials(self):
         # сохранение сериалов
 
-        print('Фильм добавлен!')
+        name_serials = 'file_bin_dir/' + self.dateTime() + '_serials.json'
+        with open(name_serials, 'w', encoding='UTF-8') as file:
+            json.dump(self.allSerials, file, ensure_ascii=False)
+        with open('serials.json', 'w', encoding='UTF-8') as file_bot:
+            json.dump(self.allSerials, file_bot, ensure_ascii=False)
+        with open('serials.json', 'r', encoding='UTF-8') as file:
+            serials_bin = json.load(file)
+        self.allSerials = serials_bin.copy()
+
+        print('Сериал добавлен!')
         print('__________________')
         print('СПИСОК ОБНОВЛЕН')
