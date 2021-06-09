@@ -3,6 +3,7 @@ import my_films
 from tkinter import *
 from tkinter import messagebox
 
+
 # main window
 # главное окно
 root = Tk()
@@ -13,7 +14,6 @@ films = my_films.MyFilms()
 root.title('MY FILMS app GUI')
 root.geometry('1000x800') # размер
 root.resizable(False, False) # неизменяемый размер
-
 
 # left side
 left_frame = Label(relief='sunken')
@@ -30,12 +30,12 @@ radio1 = Radiobutton(
     variable=radio_var,
     value=False,
     command=radio_inspect,
-    font=('', 9, 'italic')).place(x=0, y=0, width=245, height=40)
+    font=('', 10)).place(x=0, y=0, width=245, height=40)
 radio2 = Radiobutton(
     left_frame,
     text='SERIALS',
     variable=radio_var,
-    font=('', 9, 'italic'),
+    font=('', 10),
     command=radio_inspect,
     value=True).place(x=250, y=0, width=245, height=40)
 
@@ -46,7 +46,22 @@ search_title = Label(
     font = ('', 10, 'bold'),
     justify=LEFT).place(x=0, y=50, width=495, height = 40)
 
-search_entry = Entry(left_frame).place(x=10, y=90, width=480, height=40)
+search_entry = Entry(left_frame)
+def search_content(event):
+    content = search_entry.get()
+    if content:
+        search_list = list([x for x in films.allFilms() if x[:len(content)].lower() == content])
+
+        if list_box:
+            list_box.delete(0, END)
+        for x in search_list:
+            x = '%s. %s' % ((search_list.index(x))+1, x)
+            list_box.insert(END, x)
+    else:
+        turn_content(0)
+
+search_entry.bind('<Enter>', search_content)
+search_entry.place(x=10, y=90, width=480, height=40)
 
 
 # list area
