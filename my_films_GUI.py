@@ -9,10 +9,12 @@ from tkinter import messagebox
 root = Tk()
 films = my_films.MyFilms()
 
+CONTENT = films.allFilms()
+
 # main window`s settings
 # настройки главного окна
 root.title('MY FILMS app GUI')
-root.geometry('1000x800') # размер
+root.geometry('800x600') # размер
 root.resizable(False, False) # неизменяемый размер
 
 # left side
@@ -30,38 +32,40 @@ radio1 = Radiobutton(
     variable=radio_var,
     value=False,
     command=radio_inspect,
-    font=('', 10)).place(x=0, y=0, width=245, height=40)
+    font=('', 10)).place(x=0, y=0, width=195, height=30)
 radio2 = Radiobutton(
     left_frame,
     text='SERIALS',
     variable=radio_var,
     font=('', 10),
     command=radio_inspect,
-    value=True).place(x=250, y=0, width=245, height=40)
+    value=True).place(x=200, y=0, width=195, height=30)
 
 # search area
 search_title = Label(
     left_frame,
     text='SEARCH',
     font = ('', 10, 'bold'),
-    justify=LEFT).place(x=0, y=50, width=495, height = 40)
+    justify=LEFT).place(x=0, y=40, width=395, height = 30)
 
 search_entry = Entry(left_frame)
 def search_content(event):
     content = search_entry.get()
+    CONTENT = [films.allFilms(), films.allSerials][radio_var.get()]
     if content:
-        search_list = list([x for x in films.allFilms() if x[:len(content)].lower() == content])
+        search_list = list([x for x in CONTENT if x[:len(content)].lower() == content])
 
         if list_box:
             list_box.delete(0, END)
         for x in search_list:
             x = '%s. %s' % ((search_list.index(x))+1, x)
             list_box.insert(END, x)
+        CONTENT = search_list.copy()
     else:
-        turn_content(0)
+        turn_content(radio_var.get())
 
-search_entry.bind('<Enter>', search_content)
-search_entry.place(x=10, y=90, width=480, height=40)
+search_entry.bind('<Return>', search_content)
+search_entry.place(x=10, y=80, width=380, height=30)
 
 
 # list area
@@ -70,7 +74,7 @@ list_title = Label(
     text='CHOOSE FILM or SERIAL',
     font = ('', 10, 'bold'),
     justify=LEFT)
-list_title.place(x=0, y=140, width=495, height = 40)
+list_title.place(x=0, y=120, width=395, height = 30)
 
 
 scroll_listY = Scrollbar(left_frame)
@@ -90,7 +94,7 @@ def print_info(event):
     # ЕСЛИ ВЫБРАН ФИЛЬМ
     if radio_var.get() == 0:
         
-        content = films.allFilms()[list_box.curselection()[0]]
+        content = CONTENT[list_box.curselection()[0]]
         director = films.films[content]['dir']
         year = films.films[content]['year']
         rate = films.rate(films.films[content]['rate'])
@@ -117,7 +121,7 @@ def print_info(event):
         
         title_form.destroy()
         title_form = Canvas(right_frame)
-        title_form.place(x=5, y=15, width=500, height=800)
+        title_form.place(x=5, y=15, width=400, height=600)
 
         title_form.create_text(15, 0, text='НАЗВАНИЕ ФИЛЬМА:', anchor='nw', font=('', 7, 'bold'))
         title_form.create_text(15, 40, text=content, anchor='nw')
@@ -130,11 +134,11 @@ def print_info(event):
     
     # ЕСЛИ ВЫБРАН СЕРИАЛ
     elif radio_var.get() == 1:
-        content = films.allSerials[list_box.curselection()[0]]
+        content = CONTENT[list_box.curselection()[0]]
         
         title_form.destroy()
         title_form = Canvas(right_frame)
-        title_form.place(x=5, y=15, width=500, height=800)
+        title_form.place(x=5, y=15, width=400, height=600)
 
         title_form.create_text(15, 0, text='НАЗВАНИЕ СЕРИАЛА:', anchor='nw', font=('', 7, 'bold'))
         title_form.create_text(15, 40, text=content, anchor='nw')
@@ -147,12 +151,13 @@ list_box.bind('<Double-Button-1>', print_info)
 scroll_listY.config(command=list_box.yview)
 scroll_listX.config(command=list_box.xview, orient='horizontal')
 
-list_box.place(x=10, y=180, width=460, height = 540)
+list_box.place(x=10, y=150, width=360, height = 350)
 
-scroll_listY.place(x=470, y=180, width=20, height=540)
-scroll_listX.place(x=10, y=720, height=20, width=480)
+scroll_listY.place(x=370, y=150, width=20, height=350)
+scroll_listX.place(x=10, y=500, height=20, width=380)
 
 def turn_content(content):
+    CONTENT = [films.allFilms(), films.allSerials][radio_var.get()]
     all_list = [films.allFilms(), films.allSerials]
     if list_box:
         list_box.delete(0, END)
@@ -160,10 +165,11 @@ def turn_content(content):
     for x in content_list:
         x = '%s. %s' % ((content_list.index(x))+1, x)
         list_box.insert(END, x)
+    
 
 turn_content(radio_var.get())
 
-left_frame.place(x=0, y=0, width=500, height=800)
+left_frame.place(x=0, y=0, width=400, height=600)
 
 # button ADD
 def press_add():
@@ -171,7 +177,7 @@ def press_add():
         'ВНИМАНИЕ',
         message='Ты точно хочешь\nДОБАВИТЬ фильм/сериал?')
     if a == YES:
-        #messagebox.showwarning(message='Ты хочешь нажать ДА')
+        # всплывающее окно
         newWin = Toplevel()
         newWin.title('Добавление нового фильма или сериала')
         newWin.geometry('800x360')
@@ -218,7 +224,7 @@ def press_add():
 Button(
     left_frame,
     text='ADD',
-    command=press_add).place(y=745, x=150, width=200, height=45)
+    command=press_add).place(y=540, x=200-75, width=150, height=45)
 
 # right side
 right_frame = Frame()
@@ -226,15 +232,15 @@ right_frame = Frame()
 #
 title_form = Canvas(right_frame)
 title_form.create_text(
-    250,
+    200,
     15,
     text='Описание фильма\nили сериала',
     font=('', 10, 'bold'),
     anchor='n',
     justify='center')
 
-title_form.place(x=5, y=40, width=500, height=160)
-right_frame.place(x=500, y=0, width=500, height=800)
+title_form.place(x=5, y=40, width=400, height=160)
+right_frame.place(x=400, y=0, width=400, height=600)
 
 #
 root.mainloop()
