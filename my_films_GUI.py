@@ -1,4 +1,5 @@
 # GUI on tkinter
+# графический интерфейс на TKINTER
 import my_films
 from tkinter import *
 from tkinter import messagebox
@@ -9,6 +10,8 @@ from tkinter import messagebox
 root = Tk()
 films = my_films.MyFilms()
 
+# общий контент
+# изменяемый в зависимости от поиска по названию
 CONTENT = films.allFilms()
 
 # main window`s settings
@@ -18,14 +21,18 @@ root.geometry('800x600') # размер
 root.resizable(False, False) # неизменяемый размер
 
 # left side
+# левая сторона интерфейса
+# выбор и поиск контента по алфавиту
 left_frame = Label(relief='sunken')
 
 # radio area
+# кнопки переключения контента между фильмами и сериалами
 def radio_inspect():
     turn_content(radio_var.get())
 
 radio_var = BooleanVar()
-radio_var.set(False)
+radio_var.set(False)# по умолчанию в режиме фильмов
+
 radio1 = Radiobutton(
     left_frame,
     text='FILMS',
@@ -42,6 +49,7 @@ radio2 = Radiobutton(
     value=True).place(x=200, y=0, width=195, height=30)
 
 # search area
+# поле ввода поиска по буквам или части названия (от начала)
 search_title = Label(
     left_frame,
     text='SEARCH',
@@ -49,7 +57,11 @@ search_title = Label(
     justify=LEFT).place(x=0, y=40, width=395, height = 30)
 
 search_entry = Entry(left_frame)
+# функция которая ищет совпадение вводимой строки
+# и начала названия фильма
+# вводимы строки не зависят от регистра
 def search_content(event):
+    global CONTENT
     content = search_entry.get()
     CONTENT = [films.allFilms(), films.allSerials][radio_var.get()]
     if content:
@@ -64,11 +76,13 @@ def search_content(event):
     else:
         turn_content(radio_var.get())
 
+# функция реагирует на событие нажатия клавиши "ENTER"
 search_entry.bind('<Return>', search_content)
 search_entry.place(x=10, y=80, width=380, height=30)
 
 
 # list area
+# список всего контента
 list_title = Label(
     left_frame,
     text='CHOOSE FILM or SERIAL',
@@ -76,7 +90,7 @@ list_title = Label(
     justify=LEFT)
 list_title.place(x=0, y=120, width=395, height = 30)
 
-
+# возможность скролить список и в длину и в ширину
 scroll_listY = Scrollbar(left_frame)
 scroll_listX = Scrollbar(left_frame)
 
@@ -87,10 +101,11 @@ list_box = Listbox(
     font= ('', 9)
 )
 
-
+# отображение информации выбранного контента
+# отображение происходит в правой стороне интерфейса
 def print_info(event):
     global title_form
-
+    global CONTENT
     # ЕСЛИ ВЫБРАН ФИЛЬМ
     if radio_var.get() == 0:
         
@@ -157,6 +172,7 @@ scroll_listY.place(x=370, y=150, width=20, height=350)
 scroll_listX.place(x=10, y=500, height=20, width=380)
 
 def turn_content(content):
+    global CONTENT
     CONTENT = [films.allFilms(), films.allSerials][radio_var.get()]
     all_list = [films.allFilms(), films.allSerials]
     if list_box:
@@ -242,5 +258,5 @@ title_form.create_text(
 title_form.place(x=5, y=40, width=400, height=160)
 right_frame.place(x=400, y=0, width=400, height=600)
 
-#
+# исполняющий цикл
 root.mainloop()
