@@ -113,6 +113,7 @@ def print_info(event):
         director = films.films[content]['dir']
         year = films.films[content]['year']
         rate = films.rate(films.films[content]['rate'])
+        rate_num = films.films[content]['rate']
 
         # цикл для переносов длиных названий
         if len(content) > 24:
@@ -146,6 +147,53 @@ def print_info(event):
         title_form.create_text(15, 300, text=year, anchor='nw')
         title_form.create_text(15, 390, text='МОЯ ОЦЕНКА ФИЛЬМУ:', anchor='nw', font=('', 7, 'bold'))
         title_form.create_text(15, 430, text=rate, anchor='nw')
+
+        def press_edit_film():
+            a = messagebox.askyesno(
+                'ВНИМАНИЕ',
+                message='Ты точно хочешь\nИЗМЕНИТЬ информацию?')
+            if a == YES:
+                # всплывающее окно
+                newWin = Toplevel()
+                newWin.title('Изменение информации о фильме')
+                newWin.geometry('800x360')
+                newWin.resizable(False, False)
+               
+                title_label = Label(newWin, text='Название фильма').pack(fill='x')
+                title_entry = Entry(newWin)
+                title_entry.insert(0, content)
+                title_entry.pack(fill='x', padx=15)
+                dir_label = Label(newWin, text='Режиссер фильма').pack(fill='x')
+                dir_entry = Entry(newWin)
+                dir_entry.insert(0, director)
+                dir_entry.pack(fill='x', padx=15)
+                year_label = Label(newWin, text='Год выпуска').pack(fill='x')
+                year_entry = Entry(newWin)
+                year_entry.insert(0, year)
+                year_entry.pack(fill='x', padx=15)
+                rate_label = Label(newWin, text='Рейтинг фильма').pack(fill='x')
+                rate_entry = Entry(newWin)
+                rate_entry.insert(0, rate_num)
+                rate_entry.pack(fill='x', padx=15)
+
+            
+                def save_button():
+                    del films.films[content]
+                    films.newFilm(
+                        title_entry.get(),
+                        dir_entry.get(),
+                        int(year_entry.get()),
+                        int(rate_entry.get()))
+                    films.saveFilm()
+                    turn_content(radio_var.get())
+                    newWin.destroy()
+
+                button = Button(newWin, text='Сохранить!', command=save_button).pack(pady=15)
+
+        Button(
+            right_frame,
+            text='EDIT',
+            command=press_edit_film).place(y=540, x=200-75, width=150, height=45)
     
     # ЕСЛИ ВЫБРАН СЕРИАЛ
     elif radio_var.get() == 1:
@@ -157,7 +205,33 @@ def print_info(event):
 
         title_form.create_text(15, 0, text='НАЗВАНИЕ СЕРИАЛА:', anchor='nw', font=('', 7, 'bold'))
         title_form.create_text(15, 40, text=content, anchor='nw')
+        def press_edit_serial():
+            a = messagebox.askyesno(
+                'ВНИМАНИЕ',
+                message='Ты точно хочешь\nИЗМЕНИТЬ информацию?')
+            if a == YES:
+                # всплывающее окно
+                newWin = Toplevel()
+                newWin.title('Изменение информации о сериале')
+                newWin.geometry('800x360')
+                newWin.resizable(False, False)
 
+                title_label = Label(newWin, text='Название сериала').pack(fill='x')
+                title_entry = Entry(newWin)
+                title_entry.insert(0, content)
+                title_entry.pack(fill='x', padx=15)
+                def save_button():
+                    films.allSerials.remove(content)
+                    films.newSerial(title_entry.get())
+                    films.saveSerials()
+                    turn_content(radio_var.get())
+                    newWin.destroy()
+                button = Button(newWin, text='Сохранить!', command=save_button).pack(pady=15)
+        Button(
+            right_frame,
+            text='EDIT',
+            command=press_edit_serial).place(y=540, x=200-75, width=150, height=45)
+        
     else:
         pass
 
@@ -214,7 +288,11 @@ def press_add():
 
             
             def save_button():
-                films.newFilm(title_entry.get(), dir_entry.get(), int(year_entry.get()), int(rate_entry.get()))
+                films.newFilm(
+                    title_entry.get(),
+                    dir_entry.get(),
+                    int(year_entry.get()),
+                    int(rate_entry.get()))
                 films.saveFilm()
                 turn_content(radio_var.get())
                 newWin.destroy()
@@ -244,6 +322,8 @@ Button(
 
 # right side
 right_frame = Frame()
+
+
 
 #
 title_form = Canvas(right_frame)
